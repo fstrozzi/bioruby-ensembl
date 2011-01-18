@@ -1,0 +1,60 @@
+#
+# = test/unit/test_connection.rb - Unit test for Ensembl::Core
+#
+# Copyright::   Copyright (C) 2009
+#               Jan Aerts <http://jandot.myopenid.com>
+#               Francesco Strozzi <francesco.strozzi@gmail.com>
+# License::     Ruby's
+#
+# $Id:
+
+require 'test/helper'
+
+
+class TestConnection < Test::Unit::TestCase
+
+  def test_remote_core_connection
+    assert_nothing_raised do 
+      Ensembl::Core::DBConnection.connect('Homo sapiens',56)
+    end
+  end
+
+  # This is to check if the overwrite of the default parameters is possible, 
+  # so you can specify an Ensembl database on a host that is different from the official Ensembl website.
+
+  def test_local_core_connection
+    
+    # Change username, password, host and port in order to test the connection with a different Ensembl db server
+    assert_nothing_raised do 
+      Ensembl::Core::DBConnection.connect('Homo sapiens',56,:username => "anonymous",:host => "ensembldb.ensembl.org", :port => 5306)
+    end
+  end
+  
+  def test_remote_variation_connection
+    assert_nothing_raised do 
+      Ensembl::Variation::DBConnection.connect('Homo sapiens',56)
+    end
+  end
+  
+  def test_local_variation_connection
+    
+    # Change username, password, host and port in order to test the connection with a different Ensembl db server
+    assert_nothing_raised do 
+      Ensembl::Variation::DBConnection.connect('Bos taurus',56,:username => "anonymous",:host => "ensembldb.ensembl.org", :port => 5306)
+    end
+  end
+  
+  def test_connection_ensembl_genomes
+    assert_nothing_raised do 
+      Ensembl::Core::DBConnection.ensemblgenomes_connect('Staphylococcus aureus MRSA252',7)
+    end
+  end
+  
+  def test_manual_connection_ensembl_genomes
+    assert_nothing_raised do
+      Ensembl::Core::DBConnection.connect("Bacillus collection",7, :host => "mysql.ebi.ac.uk", :port => 4157)
+    end
+  end
+  
+end
+

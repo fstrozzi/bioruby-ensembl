@@ -15,22 +15,23 @@ Jeweler::Tasks.new do |gem|
   gem.name = "bio-ensembl"
   gem.homepage = "http://github.com/fstrozzi/bioruby-ensembl"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
-  gem.email = "francesco.strozzi@gmail.com"
-  gem.authors = ["Francesco Strozzi"]
+  gem.summary = "A Ruby API to the Ensembl database"
+  gem.description = "This API provides a complete set of methods and classes to access the Ensembl database using Ruby programming language"
+  gem.email = ["jan.aerts@gmail.com","francesco.strozzi@gmail.com"]
+  gem.authors = ["Jan Aerts","Francesco Strozzi"]
   # Include your dependencies below. Runtime dependencies are required when using your gem,
   # and development dependencies are only needed for development (ie running rake tasks, tests, etc)
-  #  gem.add_runtime_dependency 'jabber4r', '> 0.1'
-  #  gem.add_development_dependency 'rspec', '> 1.2.3'
+  gem.add_runtime_dependency 'active_record', '>= 3.0'
+  gem.add_runtime_dependency 'bio', '> 1.4.1'
+  gem.add_development_dependency 'active_record', '>= 3.0'
+  gem.add_development_dependency 'bio', '> 1.4.1'
 end
 Jeweler::RubygemsDotOrgTasks.new
 
-require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
-  test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
+task :test do
+  Dir.glob("test/**/test_*.rb").each do |test|
+    ruby test
+  end
 end
 
 require 'rcov/rcovtask'

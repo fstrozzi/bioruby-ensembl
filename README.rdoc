@@ -1,6 +1,6 @@
 = bio-ensembl
 
-Description goes here.
+Ruby Ensembl API conversion for the BioRuby Plugin System
 
 == Contributing to bio-ensembl
  
@@ -14,6 +14,6 @@ Description goes here.
 
 == Copyright
 
-Copyright (c) 2011 Francesco Strozzi. See LICENSE.txt for
+Copyright (c) 2011 Jan Aerts and Francesco Strozzi. See LICENSE.txt for
 further details.
 
