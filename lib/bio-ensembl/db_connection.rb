@@ -11,6 +11,19 @@
 require 'rubygems'
 require 'active_record'
 
+
+class ActiveRecord::Base
+  def self.belongs_to_what
+    return self.reflect_on_all_associations(:belongs_to).collect{|a| a.name.to_s}
+  end
+  
+  def self.has_what
+    a = [self.reflect_on_all_associations(:has_one), self.reflect_on_all_associations(:has_many)]
+    return a.flatten.uniq.collect{|a| a.name.to_s}
+  end
+end
+
+
 module Ensembl
   DB_ADAPTER = 'mysql'
   DB_HOST = 'ensembldb.ensembl.org'
