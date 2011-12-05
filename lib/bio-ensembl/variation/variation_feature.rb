@@ -8,52 +8,8 @@
 
 
 module Ensembl
-  
+
   module Variation
-    
-    # The Variation class represents single nucleotide polymorhisms (SNP) or variations 
-    # and provides information like the names (IDs), the validation status and 
-    # the allele information.
-    #
-    # *BUG*: fields like validation_status and consequence_type are created 
-    # using SET option directly in MySQL. These fields are bad interpreted by
-    # ActiveRecord, returning always 0.
-    #
-    # This class uses ActiveRecord to access data in the Ensembl database.
-    # See the general documentation of the Ensembl module for
-    # more information on what this means and what methods are available.
-    #
-    # @example
-    #   v = Variation.find_by_name('rs10111')
-    #   v.alleles.each do |a|
-    #     puts a.allele, a.frequency
-    #   end
-    #
-    #   variations = Variation.fetch_all_by_source('dbSNP') # many records
-    #   variations.each do |v|
-    #     puts v.name
-    #   end
-    # 
-    class Variation < DBConnection
-      set_primary_key "variation_id"
-      belongs_to :source
-      has_many :variation_synonyms
-      has_one :flanking_sequence
-      has_many :allele_group_alleles
-      has_many :allele_groups, :through => :allele_group_alleles
-      has_many :population_genotypes
-      has_many :alleles
-      has_many :variation_features
-      has_many :variation_group_variations
-      has_many :variation_groups, :through => :variation_group_variations
-      has_many :individual_genotype_multiple_bps
-      has_many :failed_variations
-      has_many :failed_descriptions, :through => :failed_variations
-      
-      def self.fetch_all_by_source(source)
-        variations = Source.find_by_name(source).variations
-      end
-    end
     
     
     # The VariationFeature class gives information about the genomic position of 
@@ -175,6 +131,7 @@ module Ensembl
          if genes[0] != nil
           genes.each do |g|
             g.transcripts.each do |t|
+              @cache = {}
               tv = TranscriptVariation.new() # create a new TranscriptVariation object for every transcript present
               # do the calculations
               
@@ -223,18 +180,18 @@ module Ensembl
       ## CONSEQUENCE CALCULATION FUNCTIONS ##
       
       def check_intergenic(vf,t)
-        if vf.seq_region_end < t.seq_region_start and ((t.seq_region_start - vf.seq_region_end) +1) > 5000 then
+        if vf.seq_region_end < t.seq_region_start and (t.seq_region_start - vf.seq_region_end) > 5000 then
            return "INTERGENIC"
-        elsif vf.seq_region_start > t.seq_region_end and ((vf.seq_region_start - t.seq_region_end) +1) > 5000 then
+        elsif vf.seq_region_start > t.seq_region_end and (vf.seq_region_start - t.seq_region_end) > 5000 then
            return "INTERGENIC"      
         end
         return nil        
       end
       
       def check_upstream_downstream(vf,t)
-        if vf.seq_region_end < t.seq_region_start and ((t.seq_region_start - vf.seq_region_end) +1) <= 5000 then
+        if vf.seq_region_end < t.seq_region_start and (t.seq_region_start - vf.seq_region_end) <= 5000 then
            return (t.strand == 1) ? "UPSTREAM" : "DOWNSTREAM"
-        elsif vf.seq_region_start > t.seq_region_end and ((vf.seq_region_start - t.seq_region_end)+1) <= 5000 then
+        elsif vf.seq_region_start > t.seq_region_end and (vf.seq_region_start - t.seq_region_end) <= 5000 then
            return (t.strand == 1) ? "DOWNSTREAM" : "UPSTREAM"
         
         # check if it's an InDel and if overlaps the transcript start / end   
@@ -267,30 +224,36 @@ module Ensembl
       end
       
       def check_splice_site(vf,t)
-          exon_up = t.exon_for_genomic_position(vf.seq_region_start)
-          exon_down = t.exon_for_genomic_position(vf.seq_region_end)
-          if exon_up.nil? and exon_down.nil? # we are inside an intron
-             # checking boundaries
-             near_exon_up_2bp = t.exon_for_genomic_position(vf.seq_region_start-2)
-             near_exon_down_2bp = t.exon_for_genomic_position(vf.seq_region_end+2)
-             near_exon_up_8bp = t.exon_for_genomic_position(vf.seq_region_start-8)
-             near_exon_down_8bp = t.exon_for_genomic_position(vf.seq_region_end+8)
-             if near_exon_up_2bp or near_exon_down_2bp then
-                return "ESSENTIAL_SPLICE_SITE"
-             elsif near_exon_up_8bp or near_exon_down_8bp then
-                return "SPLICE_SITE"
-             else
-                return "INTRONIC"   
+        @cache[:exons] = []
+        var_start,var_end = (vf.seq_region_strand == 1) ? [vf.seq_region_start,vf.seq_region_end] : [vf.seq_region_end,vf.seq_region_start]
+        t.exons.each {|ex| @cache[:exons] << Range.new(ex.seq_region_start,ex.seq_region_end)}
+        
+        exon_up = check_near_exons(var_start,@cache[:exons])
+        exon_down = check_near_exons(var_end,@cache[:exons])
+        if !exon_up and !exon_down # we are inside an intron
+           # checking boundaries
+           near_exon_up_2bp = check_near_exons(var_start-2..var_start,@cache[:exons])
+           near_exon_down_2bp = check_near_exons(var_end..var_end+2,@cache[:exons])
+           if near_exon_up_2bp or near_exon_down_2bp then
+              return "ESSENTIAL_SPLICE_SITE"
+           else
+              near_exon_up_8bp = check_near_exons(var_start+8..var_start,@cache[:exons])
+              near_exon_down_8bp = check_near_exons(var_end..var_end+8,@cache[:exons])    
+              if near_exon_up_8bp or near_exon_down_8bp then
+                 return "SPLICE_SITE"
+              else
+                 return "INTRONIC"   
+              end
+           end
+        elsif exon_up and exon_down # the variation is inside an exon
+             # check if it is a splice site
+             if (var_start-exon_up.first) <= 3 or (exon_down.last-var_end) <= 3 then
+                return "SPLICE_SITE"                   
              end
-          elsif exon_up and exon_down # the variation is inside an exon
-                # check if it is a splice site
-                if (vf.seq_region_start-exon_up.seq_region_start) <= 3 or (exon_down.seq_region_end-vf.seq_region_end) <= 3 then
-                    return "SPLICE_SITE"                   
-                end
-          else # a complex indel spanning intron/exon boundary
-               return "COMPLEX_INDEL"
-          end
-          return nil      
+        else # a complex indel spanning intron/exon boundary
+             return "COMPLEX_INDEL"
+        end
+        return nil      
       end
       
       def check_aa_change(vf,t)
@@ -334,6 +297,18 @@ module Ensembl
             return "SYNONYMOUS_CODING",pep_string 
           end
            
+       end
+       
+       
+       def check_near_exons(feature,exons_ranges)
+        exons_ranges.each do |exon_range|
+          if feature.is_a? Range
+            return exon_range if (feature.first <= exon_range.last) && (exon_range.first <= feature.last)
+          else
+            return exon_range if exon_range.include? feature
+          end  
+        end
+        return false
        end
       
       

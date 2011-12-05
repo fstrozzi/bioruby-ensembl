@@ -29,8 +29,8 @@ end
 Jeweler::RubygemsDotOrgTasks.new
 
 task :test do
-  Dir.glob("test/**/test_*.rb").each do |test|
-    ruby test
+  Dir.glob("test/**/test_*.rb").each do |test_case|
+    ruby test_case
   end
 end
 

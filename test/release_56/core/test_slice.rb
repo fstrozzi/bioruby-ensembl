@@ -14,7 +14,7 @@ include Ensembl::Core
 class TestSlice < Test::Unit::TestCase
   
   def setup
-    DBConnection.connect('homo_sapiens', 60)
+    DBConnection.connect('homo_sapiens', 56)
   end
   
   def teardown
@@ -37,6 +37,13 @@ class TestSlice < Test::Unit::TestCase
     assert_equal("13",s_rev.seq_region.name)
     assert_equal(31786617,s_rev.start)
     assert_equal(31786816,s_rev.stop)
+  end
+
+  def test_slice_genes
+  	slice = Slice.fetch_by_region("chromosome","13",31773073,31909413,1)
+	genes = slice.genes
+	assert_equal("ENSG00000229427",genes[1].stable_id)
+  	assert_equal("ENSG00000187676",genes[0].stable_id)
   end
 
 end

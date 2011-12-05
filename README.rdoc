@@ -1,6 +1,6 @@
 = bio-ensembl
 
-Ruby Ensembl API conversion for the BioRuby Plugin System
+Ruby API to access the Ensembl database
 
 == Contributing to bio-ensembl
  

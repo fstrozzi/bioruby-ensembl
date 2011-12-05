@@ -11,7 +11,7 @@
 
 module Ensembl
   ENSEMBL_RELEASE = 60
-  
+
   class Session
     attr_accessor :coord_systems
     attr_accessor :seqlevel_id, :seqlevel_coord_system
@@ -19,13 +19,15 @@ module Ensembl
     attr_accessor :coord_system_ids #map CS id to CS name
     attr_accessor :seq_regions
     attr_accessor :collection_species
+    attr_accessor :release
 
     def initialize
       @coord_systems = Hash.new # key = id; value = CoordSystem object
       @coord_system_ids = Hash.new # key = id; value = name
       @seq_regions = Hash.new
+      @release = ENSEMBL_RELEASE
     end
-    
+
     def reset
       @coord_systems = Hash.new
       @coord_system_ids = Hash.new
@@ -42,39 +44,22 @@ module Ensembl
 
 end
 
-require 'rubygems'
-begin
-  require 'bio'
-rescue LoadError
-    raise LoadError, "You must have bioruby installed"
-end
-
-begin
-  require 'mysql'
-rescue LoadError
-  raise LoadError, "You must have Mysql Gem installed"
-end
-
-begin
-  require 'active_record'
-rescue LoadError
-  raise LoadError, "You must have ActiveRecord installed"
-end
 
 
+# BioRuby
+require 'bio'
 
 # Database connection
-require File.join('bio-ensembl','db_connection.rb')
+require 'active_record'
+require 'bio-ensembl/db_connection'
 
 # Core modules
-require File.join('bio-ensembl','core','activerecord.rb')
-require File.join('bio-ensembl','core','transcript.rb')
-require File.join('bio-ensembl','core','slice.rb')
-require File.join('bio-ensembl','core','project.rb')
-require File.join('bio-ensembl','core','transform.rb')
-require File.join('bio-ensembl','core','collection.rb')
+require 'bio-ensembl/core/activerecord'
+require 'bio-ensembl/core/transcript'
+require 'bio-ensembl/core/slice'
+require 'bio-ensembl/core/project'
+require 'bio-ensembl/core/transform'
+require 'bio-ensembl/core/collection'
 
 # Variation modules
-require File.join('bio-ensembl','variation','activerecord.rb')
-require File.join('bio-ensembl','variation','variation.rb')
-
+require 'bio-ensembl/variation/activerecord'

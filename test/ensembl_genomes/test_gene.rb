@@ -1,20 +1,19 @@
 #
-# = test/unit/release_53/ensembl_genomes/test_gene.rb - Unit test for Ensembl::Core
 #
-# Copyright::   Copyright (C) 2009
+# Copyright::   Copyright (C) 2011
 #               Francesco Strozzi <francesco.strozzi@gmail.com>
 # License::     Ruby's
 #
 # $Id:
 
-require 'test/helper'
+require File.expand_path File.join(File.dirname(__FILE__),"../helper.rb")
 
 include Ensembl::Core
 
 class TestGene < Test::Unit::TestCase
   
   def setup
-    DBConnection.ensemblgenomes_connect('pyrococcus_collection',6) 
+    DBConnection.ensemblgenomes_connect('pyrococcus_collection',8) 
   end
   
   def teardown

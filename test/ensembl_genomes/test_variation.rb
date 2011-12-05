@@ -1,14 +1,12 @@
 #
-# = test/unit/release_53/ensembl_genomes/test_variation.rb - Unit test for Ensembl::Core
 #
-# Copyright::   Copyright (C) 2009
+# Copyright::   Copyright (C) 2011
 #               Francesco Strozzi <francesco.strozzi@gmail.com>
 # License::     Ruby's
 #
 # $Id:
 
-
-require 'test/helper'
+require File.expand_path File.join(File.dirname(__FILE__),"../helper.rb")
 
 include Ensembl::Variation
 
@@ -16,7 +14,7 @@ include Ensembl::Variation
 class TestVariation < Test::Unit::TestCase
   
   def setup
-    DBConnection.ensemblgenomes_connect('vitis_vinifera',7)
+    DBConnection.ensemblgenomes_connect('vitis_vinifera',8)
   end
   
   def teardown
@@ -31,7 +29,7 @@ class TestVariation < Test::Unit::TestCase
     assert_equal('T/A',vf.allele_string)
     tv = vf.transcript_variations
     t = tv[0].transcript
-    assert_equal("GSVIVT00004799001",t.stable_id)
+    assert_equal("GSVIVT01004799001",t.stable_id)
   end
   
   

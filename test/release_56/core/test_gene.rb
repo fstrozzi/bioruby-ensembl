@@ -1,5 +1,5 @@
 #
-# = test/unit/release_53/core/test_gene.rb - Unit test for Ensembl::Core
+# = test/unit/release_56/core/test_gene.rb - Unit test for Ensembl::Core
 #
 # Copyright::   Copyright (C) 2009 Francesco Strozzi <francesco.strozzi@gmail.com>
 #
@@ -14,7 +14,7 @@ include Ensembl::Core
 class TestGene < Test::Unit::TestCase
   
   def setup
-    DBConnection.connect('homo_sapiens', 60)
+    DBConnection.connect('homo_sapiens', 56)
   end
   
   def teardown
@@ -26,10 +26,10 @@ class TestGene < Test::Unit::TestCase
     assert_equal("ENSG00000006451",g.stable_id)
     assert_equal("7",g.seq_region.name)
     assert_equal(39663082,g.start)
-    assert_equal(39747723,g.stop)
+    assert_equal(39747723 ,g.stop)
     assert_equal(1,g.strand)
     assert_equal(84642,g.seq.length)
-    assert_equal("v-ral simian leukemia viral oncogene homolog A (ras related) [Source:HGNC Symbol;Acc:9839]",g.description)
+    assert_equal("Ras-related protein Ral-A Precursor  [Source:UniProtKB/Swiss-Prot;Acc:P11233]",g.description)
     assert_equal("RALA",g.name)
   end
   
@@ -37,9 +37,9 @@ class TestGene < Test::Unit::TestCase
     g = Gene.find_by_stable_id("ENSG00000006451")
     t = g.transcripts
     assert_equal(5,t.size)
-    assert_equal("ENST00000005257",t[0].stable_id)
+    assert_equal("ENST00000434466",t[0].stable_id)
     t = t[0]
-    assert_equal(2880,t.seq.length)
+    assert_equal(768,t.seq.length)
   end
   
   def test_exons
