@@ -31,7 +31,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord (= 3.0)
+  activerecord (= 3.0.0)
   bio (>= 1.4.1)
   bundler (~> 1.0.0)
   jeweler (~> 1.5.2)
