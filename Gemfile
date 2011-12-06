@@ -5,7 +5,7 @@ source "http://rubygems.org"
 
 gem "bio", ">= 1.4.1"
 gem "mysql"
-gem "activerecord", :require => "active_record"
+gem "activerecord", "= 3.0"
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
@@ -16,5 +16,5 @@ group :development do
   gem "rcov", ">= 0"
   gem "bio", ">= 1.4.1"
   gem "mysql"
-  gem 'activerecord', :require => "active_record"
+  gem 'activerecord', "= 3.0"
 end
