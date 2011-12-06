@@ -25,7 +25,7 @@ def run_calculations(args)
 
   ### OPENING CONNECTION TO ENSEMBL DATABASE ###
   require 'rubygems'
-  require 'ensembl'
+  require 'bio-ensembl'
   include Ensembl::Variation
 
   if params.key?("-g") then
@@ -85,9 +85,9 @@ def get_consequence(chr,start,stop,alleles,strand,name)
 end
 
 
-if __FILE__ == $PROGRAM_NAME
-  run_calculations(ARGV)
-end
+
+run_calculations(ARGV)
+
 
 
 
