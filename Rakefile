@@ -28,10 +28,29 @@ Jeweler::Tasks.new do |gem|
 end
 Jeweler::RubygemsDotOrgTasks.new
 
-task :test do
-  Dir.glob("test/**/test_*.rb").each do |test_case|
-    ruby test_case
+namespace :test do
+  desc "Run tests for last supported release"
+  task :last => :default do
+    name = Dir.glob("test/release_*").sort[-1]
+    Dir.glob(name+"/**/*test_*.rb").each do |test_case|
+      ruby test_case
+    end
   end
+  
+  desc "Run all tests"
+  task :all => :default do
+    Dir.glob("test//test_*.rb").each do |test_case|
+      ruby test_case
+    end
+  end
+  
+  desc "Run default tests"
+  task :default do
+    Dir.glob("test/default/test_*.rb").each do |test_case|
+      ruby test_case
+    end
+  end
+
 end
 
 require 'rcov/rcovtask'
