@@ -4,14 +4,15 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{bio-ensembl}
-  s.version = "1.0.2"
+  s.name = "bio-ensembl"
+  s.version = "1.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jan Aerts", "Francesco Strozzi"]
-  s.date = %q{2011-01-18}
-  s.description = %q{TODO: longer description of your gem}
+  s.date = "2011-12-06"
+  s.description = "This API provides a complete set of methods and classes to access the Ensembl database using Ruby programming language"
   s.email = ["jan.aerts@gmail.com", "francesco.strozzi@gmail.com"]
+  s.executables = ["ensembl", "variation_effect_predictor"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.rdoc"
@@ -19,24 +20,73 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
     "Gemfile",
+    "Gemfile.lock",
     "LICENSE.txt",
     "README.rdoc",
     "Rakefile",
     "VERSION",
+    "bin/ensembl",
+    "bin/variation_effect_predictor",
+    "bio-ensembl.gemspec",
     "lib/bio-ensembl.rb",
-    "test/helper.rb"
-  ]
-  s.homepage = %q{http://github.com/fstrozzi/bioruby-ensembl}
-  s.licenses = ["MIT"]
-  s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.4.2}
-  s.summary = %q{TODO: one-line summary of your gem}
-  s.test_files = [
+    "lib/bio-ensembl/core/activerecord.rb",
+    "lib/bio-ensembl/core/collection.rb",
+    "lib/bio-ensembl/core/project.rb",
+    "lib/bio-ensembl/core/slice.rb",
+    "lib/bio-ensembl/core/transcript.rb",
+    "lib/bio-ensembl/core/transform.rb",
+    "lib/bio-ensembl/db_connection.rb",
+    "lib/bio-ensembl/variation/activerecord.rb",
+    "lib/bio-ensembl/variation/variation_feature.rb",
+    "lib/bio-ensembl/variation/variation_feature62.rb",
+    "samples/ensembl_genomes_example.rb",
+    "samples/examples_perl_tutorial.rb",
+    "samples/small_example_ruby_api.rb",
+    "samples/variation_effect_predictor_data.txt",
+    "samples/variation_example.rb",
+    "test/data/seq_c6qbl.fa",
+    "test/data/seq_cso19_coding.fa",
+    "test/data/seq_cso19_transcript.fa",
+    "test/data/seq_drd3_gene.fa",
+    "test/data/seq_drd3_transcript.fa",
+    "test/data/seq_drd4_transcript.fa",
+    "test/data/seq_forward_composite.fa",
+    "test/data/seq_par_boundary.fa",
+    "test/data/seq_rnd3_transcript.fa",
+    "test/data/seq_ub2r1_coding.fa",
+    "test/data/seq_ub2r1_gene.fa",
+    "test/data/seq_ub2r1_transcript.fa",
+    "test/data/seq_y.fa",
+    "test/default/test_connection.rb",
+    "test/default/test_releases.rb",
     "test/ensembl_genomes/test_collection.rb",
     "test/ensembl_genomes/test_gene.rb",
     "test/ensembl_genomes/test_slice.rb",
     "test/ensembl_genomes/test_variation.rb",
     "test/helper.rb",
+    "test/release_50/core/test_project.rb",
+    "test/release_50/core/test_project_human.rb",
+    "test/release_50/core/test_relationships.rb",
+    "test/release_50/core/test_sequence.rb",
+    "test/release_50/core/test_slice.rb",
+    "test/release_50/core/test_transcript.rb",
+    "test/release_50/core/test_transform.rb",
+    "test/release_50/variation/test_activerecord.rb",
+    "test/release_50/variation/test_variation.rb",
+    "test/release_53/core/test_gene.rb",
+    "test/release_53/core/test_project.rb",
+    "test/release_53/core/test_project_human.rb",
+    "test/release_53/core/test_slice.rb",
+    "test/release_53/core/test_transform.rb",
+    "test/release_53/variation/test_activerecord.rb",
+    "test/release_53/variation/test_variation.rb",
+    "test/release_56/core/test_gene.rb",
+    "test/release_56/core/test_project.rb",
+    "test/release_56/core/test_slice.rb",
+    "test/release_56/core/test_transform.rb",
+    "test/release_56/variation/test_activerecord.rb",
+    "test/release_56/variation/test_consequence.rb",
+    "test/release_56/variation/test_variation.rb",
     "test/release_60/core/test_gene.rb",
     "test/release_60/core/test_project_human.rb",
     "test/release_60/core/test_slice.rb",
@@ -45,50 +95,96 @@ Gem::Specification.new do |s|
     "test/release_60/variation/test_activerecord.rb",
     "test/release_60/variation/test_consequence.rb",
     "test/release_60/variation/test_variation.rb",
-    "test/test_connection.rb",
-    "test/test_releases.rb"
+    "test/release_62/core/test_gene.rb",
+    "test/release_62/variation/test_activerecord.rb",
+    "test/release_62/variation/test_consequence.rb"
+  ]
+  s.homepage = "http://github.com/fstrozzi/bioruby-ensembl"
+  s.licenses = ["MIT"]
+  s.require_paths = ["lib"]
+  s.rubygems_version = "1.8.12"
+  s.summary = "A Ruby API to the Ensembl database"
+  s.test_files = [
+    "test/default/test_connection.rb",
+    "test/default/test_releases.rb",
+    "test/ensembl_genomes/test_collection.rb",
+    "test/ensembl_genomes/test_gene.rb",
+    "test/ensembl_genomes/test_slice.rb",
+    "test/ensembl_genomes/test_variation.rb",
+    "test/helper.rb",
+    "test/release_50/core/test_project.rb",
+    "test/release_50/core/test_project_human.rb",
+    "test/release_50/core/test_relationships.rb",
+    "test/release_50/core/test_sequence.rb",
+    "test/release_50/core/test_slice.rb",
+    "test/release_50/core/test_transcript.rb",
+    "test/release_50/core/test_transform.rb",
+    "test/release_50/variation/test_activerecord.rb",
+    "test/release_50/variation/test_variation.rb",
+    "test/release_53/core/test_gene.rb",
+    "test/release_53/core/test_project.rb",
+    "test/release_53/core/test_project_human.rb",
+    "test/release_53/core/test_slice.rb",
+    "test/release_53/core/test_transform.rb",
+    "test/release_53/variation/test_activerecord.rb",
+    "test/release_53/variation/test_variation.rb",
+    "test/release_56/core/test_gene.rb",
+    "test/release_56/core/test_project.rb",
+    "test/release_56/core/test_slice.rb",
+    "test/release_56/core/test_transform.rb",
+    "test/release_56/variation/test_activerecord.rb",
+    "test/release_56/variation/test_consequence.rb",
+    "test/release_56/variation/test_variation.rb",
+    "test/release_60/core/test_gene.rb",
+    "test/release_60/core/test_project_human.rb",
+    "test/release_60/core/test_slice.rb",
+    "test/release_60/core/test_transcript.rb",
+    "test/release_60/core/test_transform.rb",
+    "test/release_60/variation/test_activerecord.rb",
+    "test/release_60/variation/test_consequence.rb",
+    "test/release_60/variation/test_variation.rb",
+    "test/release_62/core/test_gene.rb",
+    "test/release_62/variation/test_activerecord.rb",
+    "test/release_62/variation/test_consequence.rb"
   ]
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<bio>, [">= 1.4.1"])
+      s.add_runtime_dependency(%q<mysql>, [">= 0"])
+      s.add_runtime_dependency(%q<activerecord>, ["= 3.0.0"])
       s.add_development_dependency(%q<shoulda>, [">= 0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
       s.add_development_dependency(%q<bio>, [">= 1.4.1"])
       s.add_development_dependency(%q<mysql>, [">= 0"])
-      s.add_development_dependency(%q<activerecord>, [">= 0"])
-      s.add_runtime_dependency(%q<active_record>, [">= 3.0"])
-      s.add_runtime_dependency(%q<bio>, ["> 1.4.1"])
-      s.add_development_dependency(%q<active_record>, [">= 3.0"])
-      s.add_development_dependency(%q<bio>, ["> 1.4.1"])
+      s.add_development_dependency(%q<activerecord>, ["= 3.0.0"])
     else
+      s.add_dependency(%q<bio>, [">= 1.4.1"])
+      s.add_dependency(%q<mysql>, [">= 0"])
+      s.add_dependency(%q<activerecord>, ["= 3.0.0"])
       s.add_dependency(%q<shoulda>, [">= 0"])
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
       s.add_dependency(%q<rcov>, [">= 0"])
       s.add_dependency(%q<bio>, [">= 1.4.1"])
       s.add_dependency(%q<mysql>, [">= 0"])
-      s.add_dependency(%q<activerecord>, [">= 0"])
-      s.add_dependency(%q<active_record>, [">= 3.0"])
-      s.add_dependency(%q<bio>, ["> 1.4.1"])
-      s.add_dependency(%q<active_record>, [">= 3.0"])
-      s.add_dependency(%q<bio>, ["> 1.4.1"])
+      s.add_dependency(%q<activerecord>, ["= 3.0.0"])
     end
   else
+    s.add_dependency(%q<bio>, [">= 1.4.1"])
+    s.add_dependency(%q<mysql>, [">= 0"])
+    s.add_dependency(%q<activerecord>, ["= 3.0.0"])
     s.add_dependency(%q<shoulda>, [">= 0"])
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.5.2"])
     s.add_dependency(%q<rcov>, [">= 0"])
     s.add_dependency(%q<bio>, [">= 1.4.1"])
     s.add_dependency(%q<mysql>, [">= 0"])
-    s.add_dependency(%q<activerecord>, [">= 0"])
-    s.add_dependency(%q<active_record>, [">= 3.0"])
-    s.add_dependency(%q<bio>, ["> 1.4.1"])
-    s.add_dependency(%q<active_record>, [">= 3.0"])
-    s.add_dependency(%q<bio>, ["> 1.4.1"])
+    s.add_dependency(%q<activerecord>, ["= 3.0.0"])
   end
 end
 
