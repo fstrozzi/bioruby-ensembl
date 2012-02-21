@@ -95,6 +95,7 @@ module Ensembl
         end
         warn "WARNING: No connection to database established. Check that the species is in snake_case (was: #{species})." if db_name.nil?
         return db_name
+        
       end
       
       def self.generic_connect(db_type, species, release, args = {})

@@ -28,7 +28,7 @@ For additional information you can contact Jan Aerts (jan.aerts@sanger.ac.uk) or
 The Ensembl Ruby API is made available as a gem. See the github site for more information (http://github.com/jandot/ruby-ensembl-api/wikis/home).
 
 Basically, it comes down to:
-  sudo gem install jandot-ruby-ensembl-api --source http://gems.github.com
+  gem install bio-ensembl
 
 == Code conventions
 Several naming conventions are used throughout the API. Learning these conventions will aid in your understanding of the code.
@@ -104,14 +104,11 @@ To find out what relationships exist for a given class, you can use the reflect_
 
 All data used and created by Ensembl is stored in MySQL relational databases. If you want to access this database the first thing you have to do is to connect to it. This is done behind the scenes using the ActiveRecord module.
 
-First, we need to tell our computer where they can find the API code. This information is contained in the RUBYLIB environment variable. Suppose you have save the API in /usr/local/lib/ruby/ensembl-api (with subdirectories lib/, test/, samples/, ...), you could set the environment variable on a bash shell like this:
-  export RUBYLIB=$RUBYLIB:/usr/local/lib/ruby/ensembl-api/lib
-
 Next, we need to import all Ruby modules that we will be using. Every Ensembl script that you will write will contain a use statement like the following:
 
   require 'ensembl'
 
-Alternatively, if you installed the API as a gem, you would write:
+Alternatively, if you installed the API as a gem, you would write (Ruby 1.8 ONLY):
 
   require 'rubygems'
   require_gem 'ensembl-api'
